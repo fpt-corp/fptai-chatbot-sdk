@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="fpt_ai_dme-tuantk",
+    name="fptai-dme-sdk-tuantk",
     version="0.0.1",
     author="Trinh Kim Tuan",
     author_email="tuantk2@fpt.com.vn",

@@ -1,5 +1,5 @@
-from fptai_dme.manage import DMEManager
-from fptai_dme.models import DMERequest
+from fptai_dme_sdk.manage import DMEManager
+from fptai_dme_sdk.models import DMERequest
 
 
 class Example:
@@ -10,7 +10,12 @@ class Example:
     message_content = 'hi'
     fptai_host = 'https://bot.fpt.ai'
     app_token = 'ec17489b2b4d164130c90d0d9ad7c4b0'
-    message = DMERequest(channel, app_code, sender_id).build(message_type, message_content)
+    payload = {
+        "set_attributes": {
+            "voucher_code": "AKKSKKSKkSODS"
+        }
+    }
+    message = DMERequest(channel, app_code, sender_id).build_payload_message(None, payload)
 
     status = DMEManager().send_request(fptai_host, app_token, message)
     print(status)
