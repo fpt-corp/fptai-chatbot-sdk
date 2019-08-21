@@ -1,10 +1,18 @@
 package fptai_dme_sdk.manage;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import fptai_dme_sdk.models.DMEResponse;
 
 public class DMEManager {
 
@@ -22,11 +30,36 @@ public class DMEManager {
 		OutputStream os = conn.getOutputStream();
 		os.write(message.getBytes());
 		os.flush();
+		BufferedReader br = new BufferedReader(new InputStreamReader(
+				(conn.getInputStream())));
+
+			String output;
+			System.out.println("Output from Server .... \n");
+			while ((output = br.readLine()) != null) {
+				System.out.println(output);
+			}
 
 		conn.disconnect();
 
 		return conn.getResponseCode();
 
+	}
+
+	public DMEResponse parseResponse(String response) {
+
+		ObjectMapper objectMapper = new ObjectMapper();
+		DMEResponse res = null;
+		try {
+			res = objectMapper.readValue(response, DMEResponse.class);
+		} catch (JsonParseException e) {
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return res;
 	}
 
 }
