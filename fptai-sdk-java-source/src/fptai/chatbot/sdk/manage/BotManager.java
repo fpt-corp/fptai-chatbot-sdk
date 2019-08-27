@@ -20,7 +20,6 @@ import fptai.chatbot.sdk.models.BaseRequest;
 import fptai.chatbot.sdk.models.BotResponse;
 import fptai.chatbot.sdk.models.Message;
 import fptai.chatbot.sdk.models.Payload;
-import fptai.dme.sdk.models.DMEResponse;
 
 public class BotManager {
 	private static String api = "/api/get_answer/";
@@ -85,7 +84,7 @@ public class BotManager {
 	public String buildPayLoadMessage(String step_name, HashMap<String, String> attributes, String sender_id) throws JsonGenerationException, JsonMappingException, IOException {
 		String payload = new Payload(attributes).build();
 		String content = "";
-		if (!step_name.isEmpty() && step_name != null) {
+		if (step_name != null) {
 			content = String.valueOf(content) + step_name + "#";
 		}
 		content = String.valueOf(content) + Base64.getEncoder().encodeToString(payload.getBytes());
