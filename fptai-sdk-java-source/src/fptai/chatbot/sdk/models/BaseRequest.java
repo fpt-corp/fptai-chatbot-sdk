@@ -37,5 +37,10 @@ public class BaseRequest {
 		this.sender_id = sender_id;
 		this.message = message;
 	}
+	
+	public BaseRequest(String channel, String app_code) {
+		this.channel = channel;
+		this.app_code = app_code;
+	}
 
 }

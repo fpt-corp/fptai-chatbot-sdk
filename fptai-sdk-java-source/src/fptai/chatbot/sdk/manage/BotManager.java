@@ -25,8 +25,10 @@ public class BotManager {
 	private static String api = "/api/get_answer/";
 	private String bot_host = "https://bot.fpt.ai";
 	private String bot_token;
-	private String channel;
-	private String bot_code;
+	private String channel = "api";
+	private String bot_code = "8cf4e606bd78ac5ca468060b330ed83b";
+	
+	private BaseRequest base_request;
 
 	public String getBot_host() {
 		return bot_host;
@@ -60,28 +62,41 @@ public class BotManager {
 		this.bot_code = bot_code;
 	}
 
-	public BotManager(String bot_host, String bot_token, String channel, String bot_code) {
+	
+	public BaseRequest getBase_request() {
+		return base_request;
+	}
+
+	public void setBase_request(BaseRequest base_request) {
+		this.base_request = base_request;
+	}
+
+	public BotManager(String bot_host, String bot_token, String channel) {
 		this.bot_host = bot_host;
 		this.bot_token = bot_token;
 		this.channel = channel;
-		this.bot_code = bot_code;
+		this.base_request = new BaseRequest(this.channel, this.bot_code);
 	}
 
-	public BotManager(String bot_token, String channel, String bot_code) {
+	public BotManager(String bot_token, String channel) {
 		this.bot_token = bot_token;
 		this.channel = channel;
-		this.bot_code = bot_code;
+		this.base_request = new BaseRequest(this.channel, this.bot_code);
 	}
 
-	public String buildTextMessage(String content, String sender_id)
-			throws JsonGenerationException, JsonMappingException, IOException {
-		Message ms = new Message("text", content);
-		BaseRequest brq = new BaseRequest(this.channel, this.bot_code, sender_id, ms);
-		ObjectMapper Obj = new ObjectMapper();
-		return Obj.writeValueAsString(brq);
+	public BotManager(String bot_token) {
+		this.bot_token = bot_token;
+		this.base_request = new BaseRequest(this.channel, this.bot_code);
 	}
 	
-	public String buildPayLoadMessage(String step_name, HashMap<String, String> attributes, String sender_id) throws JsonGenerationException, JsonMappingException, IOException {
+	public BotManager buildTextMessage(String content)
+			throws JsonGenerationException, JsonMappingException, IOException {
+		Message ms = new Message("text", content);	
+		this.base_request.setMessage(ms);
+		return this;
+	}
+	
+	public BotManager buildPayLoadMessage(String step_name, HashMap<String, String> attributes) throws JsonGenerationException, JsonMappingException, IOException {
 		String payload = new Payload(attributes).build();
 		String content = "";
 		if (step_name != null) {
@@ -89,11 +104,13 @@ public class BotManager {
 		}
 		content = String.valueOf(content) + Base64.getEncoder().encodeToString(payload.getBytes());
 		Message ms = new Message("payload", content);
-		BaseRequest brq = new BaseRequest(this.channel, this.bot_code, sender_id, ms);
-		ObjectMapper Obj = new ObjectMapper();
-		return Obj.writeValueAsString(brq);
+		this.base_request.setMessage(ms);
+		return this;
 	}
-	public int sendMessage(String message) throws IOException {
+	public int sendMessage(String sender_id) throws IOException {
+		this.base_request.setSender_id(sender_id);
+		ObjectMapper Obj = new ObjectMapper();
+		String request = Obj.writeValueAsString(this.base_request);
 		URL url = new URL(String.valueOf(this.bot_host) + api);
 		HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
 		conn.setDoOutput(true);
@@ -103,7 +120,7 @@ public class BotManager {
 		conn.setRequestProperty("Authorization", "Bearer " + this.bot_token);
 
 		OutputStream os = conn.getOutputStream();
-		os.write(message.getBytes());
+		os.write(request.getBytes());
 		os.flush();
 		BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 		String output;
