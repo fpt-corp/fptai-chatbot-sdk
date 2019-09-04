@@ -1,8 +1,6 @@
 package fptai.chatbot.sdk.manage;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.URL;
 import java.util.Base64;
@@ -83,6 +81,10 @@ public class BotManager {
 		this.channel = channel;
 		this.base_request = new BaseRequest(this.channel, this.bot_code);
 	}
+	
+	public BotManager() {
+		
+	}
 
 	public BotManager(String bot_token) {
 		this.bot_token = bot_token;
@@ -122,12 +124,6 @@ public class BotManager {
 		OutputStream os = conn.getOutputStream();
 		os.write(request.getBytes());
 		os.flush();
-		BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-		String output;
-		while ((output = br.readLine()) != null) {
-			System.out.println(output);
-		}
-
 		conn.disconnect();
 
 		return conn.getResponseCode();
