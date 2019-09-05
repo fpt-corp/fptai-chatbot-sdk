@@ -1,11 +1,19 @@
 package fptai.chatbot.sdk.models;
 
+import org.codehaus.jackson.annotate.JsonProperty;
+
 public class BaseRequest {
+	@JsonProperty("channel")
 	private String channel;
-	private String app_code;
-	private String sender_id;
-	private Message message;
 	
+	@JsonProperty("app_code")
+	private String app_code;
+	
+	@JsonProperty("sender_id")
+	private String sender_id;
+	
+	@JsonProperty("message")
+	private Message message;
 	
 	
 	public String getChannel() {

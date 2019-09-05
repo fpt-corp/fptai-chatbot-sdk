@@ -35,7 +35,6 @@ public class BotManager {
 	private String channel = "api";
 	private String botCode;
 
-
 	private BaseRequest baseRequest;
 
 	public String getBotHost() {
@@ -114,7 +113,7 @@ public class BotManager {
 		this.botCode = getBotCode();
 		this.baseRequest = new BaseRequest(this.channel, this.botCode);
 	}
-	
+
 	public BotManager(String bot_token) {
 		this.botToken = bot_token;
 		this.botCode = getBotCode();
@@ -125,15 +124,13 @@ public class BotManager {
 
 	}
 
-	public BotManager buildTextMessage(String content)
-			throws JsonGenerationException, JsonMappingException, IOException {
+	public BotManager buildTextMessage(String content) {
 		Message ms = new Message("text", content);
 		this.baseRequest.setMessage(ms);
 		return this;
 	}
 
-	public BotManager buildPayLoadMessage(String step_name, HashMap<String, String> attributes)
-			throws JsonGenerationException, JsonMappingException, IOException {
+	public BotManager buildPayLoadMessage(String step_name, HashMap<String, String> attributes) {
 		String payload = new Payload(attributes).build();
 		String content = "";
 		if (step_name != null) {
@@ -145,7 +142,7 @@ public class BotManager {
 		return this;
 	}
 
-	public String sendMessage(String sender_id){
+	public String sendMessage(String sender_id) {
 		this.baseRequest.setSenderId(sender_id);
 		ObjectMapper Obj = new ObjectMapper();
 		String request;
@@ -163,6 +160,7 @@ public class BotManager {
 			os.flush();
 			if (conn.getResponseCode() != 200) {
 				logger.error("Failed to sent message: {}", conn.getResponseCode());
+				return "Failed";
 			}
 			os.close();
 			conn.disconnect();
@@ -178,7 +176,7 @@ public class BotManager {
 			e.printStackTrace();
 		}
 		return "Failed";
-		
+
 	}
 
 	public BotResponse parseResponse(String response) {
@@ -208,7 +206,8 @@ public class BotManager {
 			conn.setRequestProperty("Accept", "application/json");
 			conn.setRequestProperty("Authorization", "Bearer " + this.botToken);
 			if (conn.getResponseCode() != 200) {
-				logger.warn("Cannot get bot info from {}, HTTP code: {}", this.botHost + this.apiBotInfo, conn.getResponseCode());
+				logger.warn("Cannot get bot info from {}, HTTP code: {}", this.botHost + this.apiBotInfo,
+						conn.getResponseCode());
 				throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
 			}
 			BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
