@@ -1,8 +1,11 @@
 package fptai.chatbot.sdk.manage;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.util.HashMap;
 
@@ -11,37 +14,60 @@ import javax.net.ssl.HttpsURLConnection;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonParseException;
 
 import fptai.chatbot.sdk.models.BaseRequest;
+import fptai.chatbot.sdk.models.BotInfo;
 import fptai.chatbot.sdk.models.BotResponse;
 import fptai.chatbot.sdk.models.Message;
 import fptai.chatbot.sdk.models.Payload;
 
 public class BotManager {
-	private static String api = "/api/get_answer/";
-	private String bot_host = "https://bot.fpt.ai";
-	private String bot_token;
+	private static Logger logger = LoggerFactory.getLogger(BotManager.class);
+
+	private String botHost = "https://bot.fpt.ai";
+	private String botToken;
+	private String apiChatBot = "/api/get_answer/";
+	private String apiBotInfo = "/api/bot_info/";
 	private String channel = "api";
-	private String bot_code = "8cf4e606bd78ac5ca468060b330ed83b";
-	
-	private BaseRequest base_request;
+	private String botCode;
 
-	public String getBot_host() {
-		return bot_host;
+
+	private BaseRequest baseRequest;
+
+	public String getBotHost() {
+		return botHost;
 	}
 
-	public void setBot_host(String bot_host) {
-		this.bot_host = bot_host;
+	public void setBotHost(String botHost) {
+		this.botHost = botHost;
 	}
 
-	public String getBot_token() {
-		return bot_token;
+	public String getBotToken() {
+		return botToken;
 	}
 
-	public void setBot_token(String bot_token) {
-		this.bot_token = bot_token;
+	public void setBotToken(String botToken) {
+		this.botToken = botToken;
+	}
+
+	public String getApiChatBot() {
+		return apiChatBot;
+	}
+
+	public void setApiChatBot(String apiChatBot) {
+		this.apiChatBot = apiChatBot;
+	}
+
+	public String getApiBotInfo() {
+		return apiBotInfo;
+	}
+
+	public void setApiBotInfo(String apiBotInfo) {
+		this.apiBotInfo = apiBotInfo;
 	}
 
 	public String getChannel() {
@@ -52,53 +78,62 @@ public class BotManager {
 		this.channel = channel;
 	}
 
-	public String getBot_code() {
-		return bot_code;
+	public BaseRequest getBaseRequest() {
+		return baseRequest;
 	}
 
-	public void setBot_code(String bot_code) {
-		this.bot_code = bot_code;
+	public void setBaseRequest(BaseRequest baseRequest) {
+		this.baseRequest = baseRequest;
 	}
 
-	
-	public BaseRequest getBase_request() {
-		return base_request;
+	public void setBotCode(String botCode) {
+		this.botCode = botCode;
 	}
 
-	public void setBase_request(BaseRequest base_request) {
-		this.base_request = base_request;
+	public BotManager(String bot_host, String api_chat_bot, String api_bot_info, String bot_token, String channel) {
+		this.botHost = bot_host;
+		this.botToken = bot_token;
+		this.apiChatBot = api_chat_bot;
+		this.apiBotInfo = api_bot_info;
+		this.channel = channel;
+		this.botCode = getBotCode();
+		this.baseRequest = new BaseRequest(this.channel, this.botCode);
 	}
 
 	public BotManager(String bot_host, String bot_token, String channel) {
-		this.bot_host = bot_host;
-		this.bot_token = bot_token;
+		this.botHost = bot_host;
+		this.botToken = bot_token;
 		this.channel = channel;
-		this.base_request = new BaseRequest(this.channel, this.bot_code);
+		this.botCode = getBotCode();
+		this.baseRequest = new BaseRequest(this.channel, this.botCode);
 	}
 
 	public BotManager(String bot_token, String channel) {
-		this.bot_token = bot_token;
+		this.botToken = bot_token;
 		this.channel = channel;
-		this.base_request = new BaseRequest(this.channel, this.bot_code);
+		this.botCode = getBotCode();
+		this.baseRequest = new BaseRequest(this.channel, this.botCode);
 	}
 	
-	public BotManager() {
-		
+	public BotManager(String bot_token) {
+		this.botToken = bot_token;
+		this.botCode = getBotCode();
+		this.baseRequest = new BaseRequest(this.channel, this.botCode);
 	}
 
-	public BotManager(String bot_token) {
-		this.bot_token = bot_token;
-		this.base_request = new BaseRequest(this.channel, this.bot_code);
+	public BotManager() {
+
 	}
-	
+
 	public BotManager buildTextMessage(String content)
 			throws JsonGenerationException, JsonMappingException, IOException {
-		Message ms = new Message("text", content);	
-		this.base_request.setMessage(ms);
+		Message ms = new Message("text", content);
+		this.baseRequest.setMessage(ms);
 		return this;
 	}
-	
-	public BotManager buildPayLoadMessage(String step_name, HashMap<String, String> attributes) throws JsonGenerationException, JsonMappingException, IOException {
+
+	public BotManager buildPayLoadMessage(String step_name, HashMap<String, String> attributes)
+			throws JsonGenerationException, JsonMappingException, IOException {
 		String payload = new Payload(attributes).build();
 		String content = "";
 		if (step_name != null) {
@@ -106,28 +141,46 @@ public class BotManager {
 		}
 		content = String.valueOf(content) + Base64.getEncoder().encodeToString(payload.getBytes());
 		Message ms = new Message("payload", content);
-		this.base_request.setMessage(ms);
+		this.baseRequest.setMessage(ms);
 		return this;
 	}
-	public int sendMessage(String sender_id) throws IOException {
-		this.base_request.setSender_id(sender_id);
+
+	public String sendMessage(String sender_id){
+		this.baseRequest.setSenderId(sender_id);
 		ObjectMapper Obj = new ObjectMapper();
-		String request = Obj.writeValueAsString(this.base_request);
-		URL url = new URL(String.valueOf(this.bot_host) + api);
-		HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
-		conn.setDoOutput(true);
-		conn.setRequestMethod("POST");
-		conn.setRequestProperty("Content-Type", "application/json");
-		conn.setRequestProperty("Accept", "application/json");
-		conn.setRequestProperty("Authorization", "Bearer " + this.bot_token);
-
-		OutputStream os = conn.getOutputStream();
-		os.write(request.getBytes());
-		os.flush();
-		conn.disconnect();
-
-		return conn.getResponseCode();
+		String request;
+		try {
+			request = Obj.writeValueAsString(this.baseRequest);
+			URL url = new URL(String.valueOf(this.botHost) + this.apiChatBot);
+			HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
+			conn.setDoOutput(true);
+			conn.setRequestMethod("POST");
+			conn.setRequestProperty("Content-Type", "application/json");
+			conn.setRequestProperty("Accept", "application/json");
+			conn.setRequestProperty("Authorization", "Bearer " + this.botToken);
+			OutputStream os = conn.getOutputStream();
+			os.write(request.getBytes());
+			os.flush();
+			if (conn.getResponseCode() != 200) {
+				logger.error("Failed to sent message: {}", conn.getResponseCode());
+			}
+			os.close();
+			conn.disconnect();
+			return "Success";
+		} catch (JsonGenerationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return "Failed";
+		
 	}
+
 	public BotResponse parseResponse(String response) {
 		ObjectMapper objectMapper = new ObjectMapper();
 		BotResponse res = null;
@@ -142,6 +195,35 @@ public class BotManager {
 		}
 
 		return res;
+	}
+
+	private String getBotCode() {
+		URL url;
+		try {
+			url = new URL(String.valueOf(this.botHost) + this.apiBotInfo);
+			HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
+			conn.setDoOutput(true);
+			conn.setRequestMethod("GET");
+			conn.setRequestProperty("Content-Type", "application/json");
+			conn.setRequestProperty("Accept", "application/json");
+			conn.setRequestProperty("Authorization", "Bearer " + this.botToken);
+			if (conn.getResponseCode() != 200) {
+				logger.warn("Cannot get bot info from {}, HTTP code: {}", this.botHost + this.apiBotInfo, conn.getResponseCode());
+				throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
+			}
+			BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
+			SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+			ObjectMapper mapper = new ObjectMapper();
+			mapper.setDateFormat(df);
+			BotInfo botInfo = mapper.readValue(br, BotInfo.class);
+			br.close();
+			conn.disconnect();
+			return botInfo.getCode();
+		} catch (IOException e) {
+			logger.error("Bot info empty or invalid bot host");
+			e.printStackTrace();
+		}
+		return "";
 	}
 
 }
