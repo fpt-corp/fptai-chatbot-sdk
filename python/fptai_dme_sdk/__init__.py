@@ -1,1 +1,0 @@
-name = "fptai_dme_sdk"
