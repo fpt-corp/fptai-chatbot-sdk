@@ -1,0 +1,2 @@
+class Example():
+    print("a")
