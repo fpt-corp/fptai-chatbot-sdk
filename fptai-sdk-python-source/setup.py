@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="fptai_chatbot_sdk",
-    version="0.0.1",
+    version="0.0.3",
     author="Trinh Kim Tuan",
     author_email="tuantk2@fpt.com.vn",
     description="SDK for chat bot",

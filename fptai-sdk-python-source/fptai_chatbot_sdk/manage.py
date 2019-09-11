@@ -52,8 +52,8 @@ class BotManager(object):
         else:
             return 'Failed'
 
-    def parse_response(self, bot_response):
-        return BotResponse.from_json(json.loads(bot_response))
+    def parse_response(bot_response):
+        return BotResponse.from_json(bot_response)
 
     def get_bot_code(self):
         headers = {'Authorization': 'Bearer ' + self.bot_token, 'Content-Type': 'application/json'}
