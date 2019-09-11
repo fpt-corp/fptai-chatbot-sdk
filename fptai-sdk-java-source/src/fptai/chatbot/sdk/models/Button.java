@@ -16,7 +16,7 @@ public class Button {
 	@JsonProperty("url")
 	private String url;
 	
-	@JsonProperty("phoneNumber")
+	@JsonProperty("phone_number")
 	private String phoneNumber;
 	
 	
