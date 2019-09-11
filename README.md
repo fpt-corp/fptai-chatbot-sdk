@@ -1,9 +1,9 @@
-#FPT AI CHAT BOT SDK
-##Tổng quan
+# FPT AI CHAT BOT SDK  
+## Tổng quan  
 Chat bot SDK được sử dụng để gửi tin nhắn tới chat bot engine và chuyển đổi phản hồi từ chat bot.  
 ![Introduction](docs/Attribute.png "title")
 
-##Cài đặt
+##Cài đặt  
 - Java  
 Sử dụng thư viện fptai-chatbot-sdk-java.jar
 - Python 
@@ -12,7 +12,7 @@ pip install -i https://test.pypi.org/simple/ fptai-chatbot-sdk
 ```
 
 ## Sử dụng  
-###Java  
+### Java  
 Khởi tạo bot manager  
 ```java
 BotManager bmn = new BotManager(bot_host, bot_token, channel);
@@ -28,7 +28,7 @@ BotResponse bot_res_obj = bmn.parseResponse(bot_response);
 ```
 Xem thêm tại fptai-sdk-java-example
 
-###Python
+### Python
 Khởi tạo bot manager
 ```python
 bot_manager = BotManager(bot_token, channel, bot_host)
