@@ -2,42 +2,18 @@
 ## Tổng quan  
 Chat bot SDK được sử dụng để gửi tin nhắn tới chat bot engine và chuyển đổi phản hồi từ chat bot.  
 ![Introduction](docs/Attribute.png "title")
-
-## Cài đặt  
-- Java  
-Sử dụng thư viện fptai-chatbot-sdk-java.jar
-- Python 
-```
-pip install -i https://test.pypi.org/simple/ fptai-chatbot-sdk
-```
+- Gửi tin nhắn tới chat bot engine sử dụng SDK
+- Tin nhắn được SDK gửi tới chat bot engine
+- Chat bot sau khi xử lý phản hồi lại webhook (API để hứng phản hồi từ bot)
+- Tại webhook ứng dụng có thể sử dụng SDK để phân tích phản hồi
 
 ## Sử dụng  
-### Java  
-Khởi tạo bot manager  
-```java
-BotManager bmn = new BotManager(bot_host, bot_token, channel);
-```
-Tạo tin nhắn và gửi tới bot
-```java
-bmn.buildTextMessage(content).sendMessage(sender_id)
-```
-Parse Response tại webhook
-```java
-BotManager bmn = new BotManager();
-BotResponse bot_res_obj = bmn.parseResponse(bot_response);
-```
-Xem thêm tại fptai-sdk-java-example
+**Tạo một bot trên bot.fpt.ai**
+   + Truy cập https://bot.fpt.ai thực hiện đăng nhập (Hoặc đăng ký nếu chưa có tài khoản)  
+   + Tạo <a href="https://docs.fpt.ai/docs/en/conversation/documentation/bot-creator/bot">bot mới</a>
+   + Lấy thông tin <a href="https://docs.fpt.ai/docs/en/conversation/documentation/bot-creator/settings#bot-information">bot token</a>
 
-### Python
-Khởi tạo bot manager
-```python
-bot_manager = BotManager(bot_token, channel, bot_host)
-```
-Tạo tin nhắn và gửi tới bot
-```python
-bot_manager.build_text_message(content).send_message(sender_id)
-```
-Parse Response tại webhook
-```python
-bot_response_obj = BotManager.parse_response(bot_response)
-```
+**Sử dụng SDK Java**  
+Đọc thêm tại [đây](fptai-sdk-java-example/README.md)  
+**Sử dụng SDK Python**  
+Đọc thêm tại [đây](fptai-sdk-python-example/README.md)   
