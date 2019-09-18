@@ -1,48 +1,48 @@
 # SDK Python
-### Tổng quan
-Trong ví dụ này sử dụng <a href="https://flask-restful.readthedocs.io">Flask Framework</a> làm webhook
-### Thực hiện
-- Cài đặt SDK  
+### Overview
+In this example, use <a href="https://flask-restful.readthedocs.io">Flask Framework</a> as webhook
+### Perform
+- Install SDK  
 ```pip install -i https://test.pypi.org/simple/ fptai-chatbot-sdk```
-- **Gửi tin nhắn tới chat bot engine**  
-Xem thêm tại example.py
-    + Khởi tạo BotManager  
+- **Send message to chat bot engine**  
+Read more at example.py
+    + Initialize BotManager  
     ```bot_manager = BotManager(bot_token)```  
-        - Tham số bot_token được mô tả ở <a href="https://docs.fpt.ai/docs/en/conversation/documentation/bot-creator/settings#bot-information">đây</a>  
-    + Build tin nhắn  
-        - **Tin nhắn text**  
+        - Description of the parameter bot_token <a href="https://docs.fpt.ai/docs/en/conversation/documentation/bot-creator/settings#bot-information">here</a>  
+    + Build the message  
+        - **Text message**  
         ```bot_manager.build_text_message(content)```
-            + Tham số content là nội dung tin nhắn: Ví dụ: "Hi"
-        - **Tin nhắn payload**  
+            + The content parameter is the message content: For example: "Hi"
+        - **Payload message**  
         ```bot_manager.build_payload_message(step_name,attributes)```
-            + Tham số:  
-                + *step_name: Là bước sẽ được chuyển tới (Trong tiến trình bot xử lý). Ví dụ: "NextStep""*  
-                + *attributes*: Là payload  để gán biến trên bot
-    + Gửi tin nhắn  
+            + Parameters:  
+                + *step_name*: The step will be move to (In the process of processing bot). For example: "NextStep"  
+                + *attributes*: A payload to assign variables on the bot
+    + Send message  
         ```bot_manager.build_payload_message(step_name,attributes).send_message(sender_id)```  
         ```bmn.buildPayLoadMessage(step_name, attributes).sendMessage(sender_id)```  
-        - Tham số: 
-            + *sender_id: Là id của người dùng sẽ nhận tin nhắn*
-- **Xây dựng webhook nhận phản hồi**  
-Xem thêm tại app.py
-    + Tạo API method GET để xác nhận cấu hình webhook trên bot  
+        - Parameters: 
+            + *sender_id: The id of user who will receive the message*
+- **Build webhook to get response**  
+Read more at app.py
+    + Create the GET method API to confirm webhook configuration on bot  
     ```
     def get(self):
         response = flask.make_response("62b1de06-d2f8-11e9-bb65-2a2ae2dbcce4")
         response.headers['content-type'] = 'application/octet-stream'
         return response
     ```  
-    + Tạo API method POST để nhận phản hồi từ bot
+    + Create the POST method API to get response from the bot
     ```
     def post(self):
         return "nothing"
     ```
-    + Cấu hình router  
+    + Configure router  
     ```api.add_resource(BotResponse, '/receive-response')```
-    + <a href="https://docs.fpt.ai/docs/en/conversation/documentation/bot-creator/settings#webhook">Cấu hình webhook</a> cho bot để bot gửi phản hồi về webhook vừa tạo
-        + Link: là địa chỉ API vừa tạo ở bước trên (Phải là địa chỉ public, có thể sử dụng <a href="https://ngrok.com/">ngrok</a> để public API và sử dụng địa chỉ được public để cấu hình)
-        + Secret Key: là khóa để xác minh giữa bot và webhook(Là giá trị trả về của phương thức GET được tạo ở trên)
-    + Nhận phản hồi  
+    + <a href="https://docs.fpt.ai/docs/en/conversation/documentation/bot-creator/settings#webhook">Configure the webhook</a> for the bot to let the bot send feedback about the newly created webhook
+        + Link: is the API address created in the previous step (Must be a public address, you can use <a href="https://ngrok.com/">ngrok</a> to public API and use the public address to configure)
+        + Secret Key: is the key to verify between bot and webhook(The return value of the GET method created above)
+    + Get response  
         ```request.json```
         + Parse response  
         ```BotManager.parse_response(request.json)```

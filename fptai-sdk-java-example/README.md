@@ -1,9 +1,9 @@
 # SDK JAVA
-### Tổng quan
-Trong ví dụ này sử dụng <a href="http://sparkjava.com/documentation#getting-started">Framework Spark Java</a> làm webhook
-### Thực hiện
-- Thêm thư viện fptai-chatbot-sdk-java.jar tại thư mục /libs
-- Thêm dependency cho Framework và phục vụ cho SDK
+### Overview
+In this example, use <a href="http://sparkjava.com/documentation#getting-started">Framework Spark Java</a> as webhook
+### Perform
+- Add the library fptai-chatbot-sdk-java.jar at folder /libs
+- Add dependency for Framework and to use in SDK
 ```python
 <dependencies>  
     ...  
@@ -51,43 +51,43 @@ Trong ví dụ này sử dụng <a href="http://sparkjava.com/documentation#gett
 	...
 	</dependencies>
 ```
-- **Gửi tin nhắn tới chat bot engine**  
-Xem thêm tại src/test/java/fptai.chatbot.sdk.example.AppTest
-    + Khởi tạo BotManager  
+- **Send message to chat bot engine**  
+Read more at src/test/java/fptai.chatbot.sdk.example.AppTest
+    + Initialize BotManager 
     ```BotManager bmn = new BotManager(bot_token);```  
-        - Tham số bot_token được mô tả ở <a href="https://docs.fpt.ai/docs/en/conversation/documentation/bot-creator/settings#bot-information">đây</a>  
-    + Build tin nhắn  
-        - **Tin nhắn text**  
+        - Description of the parameter bot_token <a href="https://docs.fpt.ai/docs/en/conversation/documentation/bot-creator/settings#bot-information">here</a>  
+    + Build the message  
+        - **Text message**  
         ```bmn.buildTextMessage(content)```
-            + Tham số content là nội dung tin nhắn: Ví dụ: "Hi"
-        - **Tin nhắn payload**  
+            + The content parameter is the message content: For example: "Hi"
+        - **Payload message**  
         ```bmn.buildPayLoadMessage(step_name, attributes)```
-            + Tham số:  
-                + *step_name: Là bước sẽ được chuyển tới (Trong tiến trình bot xử lý). Ví dụ: "NextStep""*  
-                + *attributes*: Là payload  để gán biến trên bot
-    + Gửi tin nhắn  
+            + Parameters:  
+                + *step_name*: The step will be move to (In the process of processing bot). For example: "NextStep"  
+                + *attributes*: A payload to assign variables on the bot
+    + Send message  
         ```bmn.buildTextMessage(content).sendMessage(sender_id)```  
         ```bmn.buildPayLoadMessage(step_name, attributes).sendMessage(sender_id)```  
-        - Tham số: 
-            + *sender_id: Là id của người dùng sẽ nhận tin nhắn*
-- **Xây dựng webhook nhận phản hồi**  
-Xem thêm tại src/main/java/fptai.chatbot.sdk.example.App
-    + Tạo API method GET để xác nhận cấu hình webhook trên bot  
+        - Parameters: 
+            + *sender_id*: The id of user who will receive the message
+- **Build webhook to get response**  
+Read more at src/main/java/fptai.chatbot.sdk.example.App
+    + Create the GET method API to confirm webhook configuration on bot  
     ```
     get("/receive-response", (request, response) -> {
 			return "0df2e72e-cef8-11e9-bb65-2a2ae2dbcce4";
 		});
     ```  
-    + Tạo API method POST để nhận phản hồi từ bot
+    + Create the POST method API to get response from the bot
     ```
     post("/receive-response", (request, response) -> {
         return "Sucess"
     })
     ```
-    + <a href="https://docs.fpt.ai/docs/en/conversation/documentation/bot-creator/settings#webhook">Cấu hình webhook</a> cho bot để bot gửi phản hồi về webhook vừa tạo
-        + Link: là địa chỉ API vừa tạo ở bước trên (Phải là địa chỉ public, có thể sử dụng <a href="https://ngrok.com/">ngrok</a> để public API và sử dụng địa chỉ được public để cấu hình)
-        + Secret Key: là khóa để xác minh giữa bot và webhook(Là giá trị trả về của phương thức GET được tạo ở trên)
-    + Nhận phản hồi  
+    + <a href="https://docs.fpt.ai/docs/en/conversation/documentation/bot-creator/settings#webhook">Configure the webhook</a> for the bot to let the bot send feedback about the newly created webhook
+        + Link: is the API address created in the previous step (Must be a public address, you can use <a href="https://ngrok.com/">ngrok</a> to public API and use the public address to configure)
+        + Secret Key: is the key to verify between bot and webhook(The return value of the GET method created above)
+    + Get response  
         ```String bot_response = request.body();```
         + Parse response  
         ```BotResponse bot_res_obj = BotManager.parseResponse(bot_response);```
