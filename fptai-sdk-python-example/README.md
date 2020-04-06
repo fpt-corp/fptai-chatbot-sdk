@@ -4,14 +4,14 @@ In this example, use <a href="https://flask-restful.readthedocs.io">Flask Framew
 ### Perform
 - Create virtual environment
     - On macOS and Linux:  
-    ```python3 -m venv env```
+    ```python3 -m venv venv```
     - On Windows:  
-    ```py -m venv env```
+    ```py -m venv venv```
 - Activating a virtual environment
     - On macOS and Linux:  
-    ```source env/bin/activate```
+    ```source venv/bin/activate```
     - On Windows:  
-    ```.\env\Scripts\activate```
+    ```.\venv\Scripts\activate```
 - Install SDK  
 ```pip install -r requirements.txt```
 - **Send message to chat bot engine**  
