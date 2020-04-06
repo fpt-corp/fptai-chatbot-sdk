@@ -4,7 +4,7 @@ chardet==3.0.4
 Click==7.0
 Flask==1.1.1
 Flask-RESTful==0.3.7
-fptai-chatbot-sdk==0.0.1
+fptai-chatbot-sdk==0.0.3
 idna==2.8
 itsdangerous==1.1.0
 Jinja2==2.10.1
