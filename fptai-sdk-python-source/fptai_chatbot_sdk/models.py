@@ -216,11 +216,19 @@ class BotResponse(object):
 
     @classmethod
     def from_json(cls, data):
-        predict_history = PredictHistory.from_json(data["predict_history"])
-        print(data["conversation_input"])
-        conversation_input = ConversationInput.from_json(data["conversation_input"])
-        messages = list(map(Message.from_json, data["messages"]))
-        data["messages"] = messages
-        data["predict_history"] = predict_history
-        data["conversation_input"] = conversation_input
+        try:
+            predict_history = PredictHistory.from_json(data["predict_history"])
+            data["predict_history"] = predict_history
+        except KeyError:
+            raise
+        try:
+            conversation_input = ConversationInput.from_json(data["conversation_input"])
+            data["conversation_input"] = conversation_input
+        except KeyError:
+            raise
+        try:
+            messages = list(map(Message.from_json, data["messages"]))
+            data["messages"] = messages
+        except KeyError:
+            raise
         return cls(**data)
