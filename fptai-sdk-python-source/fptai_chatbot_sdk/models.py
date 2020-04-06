@@ -220,15 +220,15 @@ class BotResponse(object):
             predict_history = PredictHistory.from_json(data["predict_history"])
             data["predict_history"] = predict_history
         except KeyError:
-            raise
+            pass
         try:
             conversation_input = ConversationInput.from_json(data["conversation_input"])
             data["conversation_input"] = conversation_input
         except KeyError:
-            raise
+            pass
         try:
             messages = list(map(Message.from_json, data["messages"]))
             data["messages"] = messages
         except KeyError:
-            raise
+            pass
         return cls(**data)
