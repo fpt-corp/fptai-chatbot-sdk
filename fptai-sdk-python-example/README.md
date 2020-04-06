@@ -2,8 +2,18 @@
 ### Overview
 In this example, use <a href="https://flask-restful.readthedocs.io">Flask Framework</a> as webhook
 ### Perform
+- Create virtual environment
+    - On macOS and Linux:  
+    ```python3 -m venv env```
+    - On Windows:  
+    ```py -m venv env```
+- Activating a virtual environment
+    - On macOS and Linux:  
+    ```source env/bin/activate```
+    - On Windows:  
+    ```.\env\Scripts\activate```
 - Install SDK  
-```pip install -i https://test.pypi.org/simple/ fptai-chatbot-sdk```
+```pip install -r requirements.txt```
 - **Send message to chat bot engine**  
 Read more at example.py
     + Initialize BotManager  
